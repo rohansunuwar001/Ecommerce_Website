@@ -22,7 +22,10 @@ export const createProduct = async (req, res, next) => {
 
 export const getAllProduct = async (req, res, next) => {
   try {
-    const apiFeatures = new ApiFeatures(createProductModel.find(),req.query).search().filter();
+    const resultPerPage = 6;
+    const productCount = await createProductModel.countDocuments();
+    const apiFeatures = new ApiFeatures(createProductModel.find(),req.query).search().filter().pagination(resultPerPage);
+  
     const products = await apiFeatures.query;
     if (products == "") {
       return res.status(200).json({
@@ -34,7 +37,8 @@ export const getAllProduct = async (req, res, next) => {
       res.status(200).json({
         success: true,
         message: 'Product read Successfully',
-        data: products
+        data:products,
+       
       })
     }
   } catch (error) {
@@ -115,7 +119,8 @@ export const getProductDetails = async (req, res, next) => {
     if (!product) {
       return res.status(500).json({
         success: false,
-        message: "Product Not Found"
+        message: "Product Not Found",
+        productCount
       })
     }
 
