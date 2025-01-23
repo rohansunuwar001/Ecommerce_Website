@@ -5,27 +5,43 @@ export const errorMiddleware = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.message = err.message || "Internal Server Error";
 
-    // Handle specific error types
-
-    // Handle invalid MongoDB ObjectId
-    if (err.name === "CastError") {
-        const message = `Resource not found. Invalid ${err.path}`;
-        err = new ErrorHandler(message, 400);
-    }
-
-    // Handle Mongoose validation errors
-    if (err.name === "ValidationError") {
-        const message = Object.values(err.errors)
-            .map((value) => value.message)
-            .join(", ");
-        err = new ErrorHandler(message, 400);
-    }
-
-    // Add more specific error handlers as needed...
+    // Modular error handlers
+    handleSpecificErrors(err);
 
     // Send the error response
     res.status(err.statusCode).json({
         success: false,
         message: err.message,
     });
+};
+
+// Separate function to handle specific errors
+const handleSpecificErrors = (err) => {
+    switch (err.name) {
+        case "CastError":
+            handleCastError(err);
+            break;
+
+        case "ValidationError":
+            handleValidationError(err);
+            break;
+
+        // Add other specific error handlers here as needed...
+    }
+};
+
+// Handle invalid MongoDB ObjectId
+const handleCastError = (err) => {
+    const message = `Invalid ${err.path}: ${err.value}. Resource not found.`;
+    err.message = message;
+    err.statusCode = 400;
+};
+
+// Handle Mongoose validation errors
+const handleValidationError = (err) => {
+    const message = Object.values(err.errors)
+        .map((value) => value.message)
+        .join(", ");
+    err.message = message;
+    err.statusCode = 400;
 };

@@ -40,13 +40,9 @@ class ApiFeatures {
             throw new Error("resultPerPage must be a positive number");
         }
     
-        const currentPage = Math.max(1, Number(this.queryStr?.page) || 1); // Default to page 1 if not provided
+        const currentPage = Number(this.queryString.page) || 1; // Default to page 1 if not provided
     
         const skip = resultPerPage * (currentPage - 1);
-    
-        if (!this.query) {
-            throw new Error("Query object is not initialized");
-        }
     
         this.query = this.query.limit(resultPerPage).skip(skip);
     
