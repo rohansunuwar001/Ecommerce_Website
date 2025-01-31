@@ -6,11 +6,13 @@ import productRouter from "./routes/productRoutes.js";
 import UserRouter from "./routes/userRoutes.js";
 import cookieParser from "cookie-parser";
 import OrderRouter from "./routes/orderRoutes.js";
+import helmet from "helmet";
 
 const app = express();
 app.use(cors());
 app.use(json());
 app.use(cookieParser());
+app.use(helmet());
 
 // Routes
 

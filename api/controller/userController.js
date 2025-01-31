@@ -11,6 +11,7 @@ export let userRegister = async (req, res, next) => {
     try {
         // Getting data from frontEnd
         const { name, email, password } = req.body;
+        console.log(req.body);
 
 
 

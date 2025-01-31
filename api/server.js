@@ -2,8 +2,9 @@ import dotenv from "dotenv";
 import connectDB from "./database/connect.js";
 import { port } from "./utils/constant.js";
 import app from "./app.js"
+import mongoose from "mongoose";
 
- 
+
 // Load environment variables
 dotenv.config();
 
@@ -38,6 +39,12 @@ process.on("unhandledRejection", (err) => {
         process.exit(1);
     });
 });
+
+// Handle Mongoose connection errors
+mongoose.connection.on("error", (err) => {
+    console.error(`Mongoose Connection Error: ${err.message} `)
+}
+)
 
 // Graceful Shutdown on SIGTERM
 process.on("SIGTERM", async () => {
